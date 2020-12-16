@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jsonexample.adapter.UserAdapter
+import com.example.jsonexample.model.User
 import com.example.jsonexample.model.UserModel
+import com.google.gson.Gson
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
@@ -17,33 +19,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val rvUserList = findViewById<RecyclerView>(R.id.rvUserList)
-        val userList: ArrayList<UserModel> = ArrayList()
+
         try {
-            val obj = JSONObject(getJSONFromAssets()!!)
-            val usersArray = obj.getJSONArray("users")
+            val jsonString = getJSONFromAssets()!!
+            val users = Gson().fromJson(jsonString, User::class.java)
 
-            for (i in 0 until usersArray.length()) {
-                val user = usersArray.getJSONObject(i)
-                val id = user.getInt("id")
-                val name = user.getString("name")
-                val email = user.getString("email")
-                val gender = user.getString("gender")
-                val weight = user.getDouble("weight")
-                val height = user.getInt("height")
+            rvUserList.layoutManager = LinearLayoutManager(this)
+            val adapter = UserAdapter(this, users.users)
+            rvUserList.adapter = adapter
 
-                val phone = user.getJSONObject("phone")
-                val mobile = phone.getString("mobile")
-                val office = phone.getString("office")
-
-                val userDetails = UserModel(id, name, email, gender, weight, height, mobile, office)
-                userList.add(userDetails)
-            }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
-        rvUserList.layoutManager = LinearLayoutManager(this)
-        val adapter = UserAdapter(this, userList)
-        rvUserList.adapter = adapter
     }
 
     private fun getJSONFromAssets(): String? {

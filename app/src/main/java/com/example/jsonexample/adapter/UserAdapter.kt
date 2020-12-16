@@ -40,8 +40,8 @@ class UserAdapter(private val context: Context, private val items: ArrayList<Use
             userGender.text = item.gender
             userWeight.text = item.weight.toString()
             userHeight.text = item.height.toString()
-            userMobileNumber.text = item.mobile
-            userOfficeNumber.text = item.office
+            userMobileNumber.text = item.phone.mobile
+            userOfficeNumber.text = item.phone.office
         }
     }
 }
